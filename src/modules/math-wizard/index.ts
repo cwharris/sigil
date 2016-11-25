@@ -1,0 +1,1 @@
+export { MathWizard } from "./components/MathWizard";
