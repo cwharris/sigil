@@ -13,12 +13,13 @@ export class TextComponent extends React.Component<IProps, any> {
     }
 
     render() {
+        return <div>{TextComponent.computeText(this.props)}</div>;
+    }
 
-        var text = lodash
-            .range(0, this.props.repeat || 1)
-            .map(n => this.props.text)
-            .join(this.props.seperator || " "); 
-
-        return <div>{text}</div>;
+    private static computeText({repeat, text, seperator}: IProps): string {
+        return lodash
+            .range(0, repeat || 1)
+            .map(n => text)
+            .join(seperator || " ");
     }
 }

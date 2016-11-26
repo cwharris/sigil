@@ -10,6 +10,7 @@ var config = {
         ],
         "app.styles": "./src/index.less",
     },
+    devtool: "source-map",
     output: {
         path: path.resolve(__dirname, "./www/dist"),
         publicPath: "/www/dist/",
