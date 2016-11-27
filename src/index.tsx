@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactRedux from "react-redux";
 import * as ReactDom from "react-dom";
 import * as Redux from "redux";
+import SmugMugApiClient from "smugmug";
 
 import * as AppSettings from "./AppSettings";
 
@@ -9,8 +10,6 @@ import { App } from "./containers/App";
 
 import { IAppState } from "./models/IAppState";
 import { IContact } from "./models/IContact";
-
-import SmugMugApiClient, * as SmugMug from "smugmug";
 
 var defaultState: IAppState = {
     contacts: [
