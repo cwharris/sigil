@@ -39,6 +39,7 @@ function reduceApp (state: IAppState = defaultState, action: any): IAppState {
                 contacts: state.contacts,
                 albums: action.payload
             };
+            
         case "search-albums":
             smugMugApiClient
                 .then(client => client.findAlbums(action.payload))
@@ -47,7 +48,9 @@ function reduceApp (state: IAppState = defaultState, action: any): IAppState {
                     payload: response.Response.Album
                 }));
             return state;
-        default: return state;
+
+        default:
+            return state;
     }
 }
 
