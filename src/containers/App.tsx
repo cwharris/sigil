@@ -3,7 +3,6 @@ import * as ReactRedux from "react-redux";
 import * as SmugMug from "smugmug";
 
 import { IAppState } from "../models/IAppState";
-import { IContact } from "../models/IContact";
 
 interface IProps {
     idHeader: string;
@@ -11,7 +10,6 @@ interface IProps {
 }
 
 interface IStateProps {
-    contacts: Array<IContact>;
     albums: Array<SmugMug.IAlbum>;
 }
 
@@ -21,7 +19,6 @@ interface IDispatchProps {
 
 function mapStateToProps(state: IAppState): IStateProps {
     return {
-        contacts: state.contacts,
         albums: state.albums
     };
 }
@@ -42,34 +39,16 @@ export class Component extends React.Component<IProps & IStateProps & IDispatchP
                 <h1>
                     React Redux Testing
                 </h1>
-                <table>
-                    <thead>
-                        <tr>
-                            <td>{this.props.idHeader}</td>
-                            <td>{this.props.nameHeader}</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.props.contacts.map(this.renderContactRow)}
-                    </tbody>
-                </table>
                 <input
                     type="text"
                     placeholder="search"
                     ref={x => this.searchInput = x}
                     onChange={x => this.props.searchAlbums(this.searchInput.value)} />
                     
-                {this.props.albums.map(this.renderAlbumRow)}
+                <div>
+                    {this.props.albums.map(this.renderAlbumRow)}
+                </div>
             </div>
-        );
-    }
-
-    renderContactRow(contact: IContact, index: number): React.ReactNode {
-        return (
-            <tr key={index}>
-                <td>{contact.id}</td>
-                <td>{contact.name}</td>
-            </tr>
         );
     }
 

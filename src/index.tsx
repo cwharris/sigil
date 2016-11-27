@@ -2,51 +2,60 @@ import * as React from "react";
 import * as ReactRedux from "react-redux";
 import * as ReactDom from "react-dom";
 import * as Redux from "redux";
-import SmugMugApiClient from "smugmug";
+
+import SmugMugApiClient, * as SmugMug from "../../smugmug";
 
 import * as AppSettings from "./AppSettings";
 
 import { App } from "./containers/App";
 
 import { IAppState } from "./models/IAppState";
-import { IContact } from "./models/IContact";
 
 var defaultState: IAppState = {
-    contacts: [
-        {
-            id: "1234",
-            name: "Christopher Harris"
-        },
-        {
-            id: "8762",
-            name: "David Dindak"
-        },
-        {
-            id: "4321",
-            name: "Whatever"
-        }
-    ],
     albums: []
 };
 
 var smugMugApiClient = SmugMugApiClient.create(AppSettings.SmugMug.ApiKey);
 
+function timeout(time:number): Promise<void> {
+    return new Promise(resolve => {
+        setTimeout(resolve, time);
+    });
+}
+
+async function searchAlbums(
+    client: SmugMug.ISmugMugApiClient,
+    dispatch: (action:any) => void,
+    text: string) {
+    for (let request of client.findAlbums(text)) {
+        let response = await request;
+            dispatch({
+                type: "add-albums",
+                payload: response.Response.Album
+            });
+        // for (let album of response.Response.Album) {
+        //     console.log(album);
+        // }
+        await timeout(1000);
+    }
+}
+
 function reduceApp (state: IAppState = defaultState, action: any): IAppState {
     switch (action.type) {
-        case "set-albums":
+        case "clear-albums":
             return {
-                contacts: state.contacts,
-                albums: action.payload
+                albums: []
             };
 
         case "search-albums":
-            smugMugApiClient
-                .then(client => client.findAlbums(action.payload))
-                .then(response => store.dispatch({
-                    type:"set-albums",
-                    payload: response.Response.Album
-                }));
+            setTimeout(() => store.dispatch({ type: "clear-albums" }), 0);
+            smugMugApiClient.then(client => searchAlbums(client, store.dispatch, action.payload));
             return state;
+
+        case "add-albums":
+            return {
+                albums: state.albums.concat(action.payload)
+            };
 
         default:
             return state;
