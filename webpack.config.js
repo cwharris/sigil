@@ -1,4 +1,5 @@
-/// <binding ProjectOpened='Watch - Development' />
+"use strict";
+
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var path = require("path");
 
@@ -58,7 +59,7 @@ var config = {
         ]
     },
     plugins: [
-        new ExtractTextPlugin("app.bundle.styles.css"),
+        new ExtractTextPlugin("app.bundle.styles.css")
     ]
 };
 

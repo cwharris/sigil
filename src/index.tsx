@@ -3,25 +3,47 @@ import * as ReactRedux from "react-redux";
 import * as ReactDom from "react-dom";
 import * as Redux from "redux";
 
+import * as AppSettings from "./AppSettings";
+
 import { App } from "./containers/App";
 
 import { IAppState } from "./models/IAppState";
+import { IContact } from "./models/IContact";
+
+import SmugMugApiClient, * as SmugMug from "smugmug";
 
 var defaultState: IAppState = {
-    contacts: {
-        "1234": {
+    contacts: [
+        {
             id: "1234",
             name: "Christopher Harris"
         },
-        "8762": {
+        {
             id: "8762",
             name: "David Dindak"
+        },
+        {
+            id: "4321",
+            name: "Whatever"
         }
-    }
+    ],
+    albums: []
 };
 
-function reduceApp (state: IAppState = defaultState, action: any) {
+var smugMugApiClient = SmugMugApiClient.create(AppSettings.SmugMug.ApiKey);
+
+function reduceApp (state: IAppState = defaultState, action: any): IAppState {
     switch (action.type) {
+        case "set-albums":
+            return {
+                contacts: state.contacts,
+                albums: action.payload
+            };
+        case "search-albums":
+            smugMugApiClient
+                .then(x => x.findAlbums(action.payload))
+                .then(x => store.dispatch({type:"set-albums", payload: x.Response.Album}));
+            return state;
         default: return state;
     }
 }
@@ -30,6 +52,6 @@ var store = Redux.createStore(reduceApp);
 
 ReactDom.render(
     <ReactRedux.Provider store={store}>
-        <App contacts={[]}/>
+        <App idHeader="ID" nameHeader="Name"/>
     </ReactRedux.Provider>,
     document.getElementById("root"));

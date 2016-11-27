@@ -5,6 +5,7 @@
         "experimentalDecorators": true,
         "sourceMap": true,
         "target": "es6",
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "module": "amd"
     }
 }
