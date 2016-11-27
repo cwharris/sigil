@@ -41,8 +41,11 @@ function reduceApp (state: IAppState = defaultState, action: any): IAppState {
             };
         case "search-albums":
             smugMugApiClient
-                .then(x => x.findAlbums(action.payload))
-                .then(x => store.dispatch({type:"set-albums", payload: x.Response.Album}));
+                .then(client => client.findAlbums(action.payload))
+                .then(response => store.dispatch({
+                    type:"set-albums",
+                    payload: response.Response.Album
+                }));
             return state;
         default: return state;
     }
