@@ -25,7 +25,7 @@ function mapStateToProps(state: IAppState): IStateProps {
 
 function mapDispatchToProps(dispatch: (action: any) => void): IDispatchProps {
     return {
-        searchAlbums: (text: string) => dispatch({ type: "search-albums", payload: text })
+        searchAlbums: (text: string) => dispatch({ type: "albums-search", payload: text })
     };
 }
 
@@ -54,7 +54,7 @@ export class Component extends React.Component<IProps & IStateProps & IDispatchP
 
     renderAlbumRow(album: SmugMug.IAlbum, index: number): React.ReactNode {
         return (
-            <div>
+            <div key={index}>
                 <a href={album.WebUri}>{album.AlbumKey}: {album.Name}</a>
             </div>
         );
