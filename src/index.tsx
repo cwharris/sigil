@@ -122,6 +122,6 @@ var store = Redux.createStore(reduceApp);
 
 ReactDom.render(
     <ReactRedux.Provider store={store}>
-        <App idHeader="ID" nameHeader="Name"/>
+        <App/>
     </ReactRedux.Provider>,
     document.getElementById("root"));

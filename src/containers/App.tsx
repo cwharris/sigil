@@ -5,8 +5,6 @@ import * as SmugMug from "smugmug";
 import { IAppState } from "../models/IAppState";
 
 interface IProps {
-    idHeader: string;
-    nameHeader: string;
 }
 
 interface IStateProps {
@@ -15,6 +13,7 @@ interface IStateProps {
 
 interface IDispatchProps {
     searchAlbums: (text: string) => void;
+    showMore: () => void;
 }
 
 function mapStateToProps(state: IAppState): IStateProps {
@@ -25,7 +24,13 @@ function mapStateToProps(state: IAppState): IStateProps {
 
 function mapDispatchToProps(dispatch: (action: any) => void): IDispatchProps {
     return {
-        searchAlbums: (text: string) => dispatch({ type: "albums-search", payload: text })
+        searchAlbums: (text: string) => dispatch({
+            type: "albums-search",
+            payload: text
+        }),
+        showMore: () => dispatch({
+            type: "albums-search-next"
+        })
     };
 }
 
@@ -48,6 +53,7 @@ export class Component extends React.Component<IProps & IStateProps & IDispatchP
                 <div>
                     {this.props.albums.map(this.renderAlbumRow)}
                 </div>
+                <button onClick={this.props.showMore}>Show More</button>
             </div>
         );
     }
