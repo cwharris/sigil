@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactRedux from "react-redux";
 import * as ReactDom from "react-dom";
 import * as Redux from "redux";
-import * as SmugMug from "../../smugmug";
+import * as SmugMug from "smugmug";
 
 import * as AppSettings from "./AppSettings";
 import * as AppState from "./models/IAppState";

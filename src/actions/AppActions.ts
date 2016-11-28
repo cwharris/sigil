@@ -1,5 +1,5 @@
 import * as Redux from "redux";
-import * as SmugMug from "../../../smugmug";
+import * as SmugMug from "smugmug";
 import * as AppState from "../models/IAppState"
 
 export function albumsSearch(client: SmugMug.ISmugMugApiClient, text: string) {
