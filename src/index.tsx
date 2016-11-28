@@ -14,7 +14,7 @@ import { App } from "./containers/App";
 var defaultState: AppState.IAppState = {
     smugMugApiClient: undefined,
     albums: [],
-    albumSearchIterator: undefined,
+    albumSearchIterable: undefined,
 };
 
 function reduceApp (state: AppState.IAppState = defaultState, action: any): AppState.IAppState {
@@ -37,50 +37,11 @@ function reduceApp (state: AppState.IAppState = defaultState, action: any): AppS
                     albums: state.albums.concat(action.payload)
                 });
 
-        case "albums-search":
-            if (!state.smugMugApiClient) {
-                return state;
-            }
-            setTimeout(() => {
-                store.dispatch({
-                    type: "albums-clear"
-                })
-                store.dispatch({
-                    type:"albums-search-response",
-                    payload: state.smugMugApiClient.findAlbums(action.payload)
-                });
-                store.dispatch({
-                    type:"albums-search-next"
-                });
-            });
-            return state;
-
         case "albums-search-response":
             return AppState.create<AppState.IAppState, AppState.IAppAlbumSearchIteratorState>(
                 state, {
-                    albumSearchIterator: action.payload
+                    albumSearchIterable: action.payload
                 });
-
-        case "albums-search-next":
-            if (state.albumSearchIterator) {
-                let result = state.albumSearchIterator.next();
-                if (result.done) {
-                    setTimeout(() => {
-                        store.dispatch({
-                            type: "albums-search-response",
-                            payload: undefined
-                        })
-                    });
-                } else {
-                    result.value.then(response => {
-                        store.dispatch({
-                            type: "albums-add",
-                            payload: response.Response.Album
-                        });
-                    });
-                }
-            }
-            return state;
 
         default:
             return state;

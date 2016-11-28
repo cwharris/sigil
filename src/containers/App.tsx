@@ -2,58 +2,62 @@ import * as React from "react";
 import * as ReactRedux from "react-redux";
 import * as SmugMug from "smugmug";
 
+import * as AppActions from "../actions/AppActions";
+
 import { IAppState } from "../models/IAppState";
 
-interface IProps {
+interface IOwnProps {
 }
 
 interface IStateProps {
+    client: SmugMug.ISmugMugApiClient;
+    albumSearchIterator: Iterator<Promise<SmugMug.IAlbumSearchResponse>>;
     albums: Array<SmugMug.IAlbum>;
 }
 
 interface IDispatchProps {
-    searchAlbums: (text: string) => void;
-    showMore: () => void;
+    albumsSearch: (client: SmugMug.ISmugMugApiClient, text: string) => void;
+    albumsShowMore: (albumSearchIterator: Iterator<Promise<SmugMug.IAlbumSearchResponse>>) => void;
 }
 
 function mapStateToProps(state: IAppState): IStateProps {
     return {
+        client: state.smugMugApiClient,
+        albumSearchIterator: state.albumSearchIterable,
         albums: state.albums
     };
 }
 
 function mapDispatchToProps(dispatch: (action: any) => void): IDispatchProps {
     return {
-        searchAlbums: (text: string) => dispatch({
-            type: "albums-search",
-            payload: text
-        }),
-        showMore: () => dispatch({
-            type: "albums-search-next"
-        })
+        albumsSearch: (client, text) => {
+            const asyncAction = AppActions.albumsSearch(client, text);
+            dispatch(asyncAction);
+        },
+        albumsShowMore: (albumSearchIterator) => {
+            dispatch(AppActions.albumsShowNext(albumSearchIterator))
+        }
     };
 }
 
-export class Component extends React.Component<IProps & IStateProps & IDispatchProps, any> {
+export class Component extends React.Component<IOwnProps & IStateProps & IDispatchProps, any> {
 
     searchInput: HTMLInputElement;
 
     render() {
         return (
             <div>
-                <h1>
-                    SmugMug Album Search
-                </h1>
+                <h1>SmugMug Album Search</h1>
                 <input
                     type="text"
                     placeholder="search"
                     ref={x => this.searchInput = x}
-                    onChange={x => this.props.searchAlbums(this.searchInput.value)} />
+                    onChange={x => this.props.albumsSearch(this.props.client, this.searchInput.value)} />
                     
                 <div>
                     {this.props.albums.map(this.renderAlbumRow)}
                 </div>
-                <button onClick={this.props.showMore}>Show More</button>
+                <button onClick={() => this.props.albumsShowMore(this.props.albumSearchIterator)}>Show More</button>
             </div>
         );
     }
@@ -67,4 +71,4 @@ export class Component extends React.Component<IProps & IStateProps & IDispatchP
     }
 }
 
-export const App = ReactRedux.connect(mapStateToProps, mapDispatchToProps)(Component) as React.ComponentClass<IProps>;
+export const App = ReactRedux.connect(mapStateToProps, mapDispatchToProps)(Component) as React.ComponentClass<IOwnProps>;

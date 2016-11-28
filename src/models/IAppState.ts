@@ -15,7 +15,7 @@ export interface IAppSmugMugApiClientState {
 }
 
 export interface IAppAlbumSearchIteratorState {
-    albumSearchIterator: Iterator<Promise<SmugMug.IAlbumSearchResponse>>;
+    albumSearchIterable: Iterator<Promise<SmugMug.IAlbumSearchResponse>>;
 }
 
 export function create<TState extends TPartial, TPartial>(state: TState, obj: TPartial): TState {
