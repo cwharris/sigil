@@ -1,4 +1,5 @@
-/// <binding ProjectOpened='Watch - Development' />
+"use strict";
+
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var path = require("path");
 
@@ -10,6 +11,7 @@ var config = {
         ],
         "app.styles": "./src/index.less",
     },
+    devtool: "source-map",
     output: {
         path: path.resolve(__dirname, "./www/dist"),
         publicPath: "/www/dist/",
@@ -57,7 +59,7 @@ var config = {
         ]
     },
     plugins: [
-        new ExtractTextPlugin("app.bundle.styles.css"),
+        new ExtractTextPlugin("app.bundle.styles.css")
     ]
 };
 

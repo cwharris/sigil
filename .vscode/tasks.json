@@ -9,9 +9,9 @@
 	"echoCommand": true,
 	"tasks": [
 		{
-			"args": [ "build-dev-serve" ],
-			"suppressTaskName": true,
 			"taskName": "serve",
+			"suppressTaskName": true,
+			"args": [ "build-dev-serve" ],
 			"isBuildCommand": true,
 			"isWatching": true
 		},

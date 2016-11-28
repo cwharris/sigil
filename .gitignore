@@ -1,2 +1,7 @@
 node_modules/
 www/dist/
+
+src/AppSettings.ts
+
+.DS_Store
+*.log
