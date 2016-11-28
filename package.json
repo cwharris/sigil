@@ -29,7 +29,7 @@
     "redux": "^3.4.0",
     "redux-thunk": "^2.1.0",
     "rm-local-modules": "0.0.1",
-    "smugmug": "file:../smugmug",
+    "smugmug": "file:../smugmug-client-typescript",
     "style-loader": "^0.13.1",
     "ts-loader": "^1.2.2",
     "typescript": "^2.0.10",
