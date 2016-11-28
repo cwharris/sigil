@@ -5,7 +5,7 @@ import * as Redux from "redux";
 import * as SmugMug from "../../smugmug";
 
 import * as AppSettings from "./AppSettings";
-import * as AppState from "./models/AppState";
+import * as AppState from "./models/IAppState";
 
 import thunkMiddleware from "redux-thunk";
 
