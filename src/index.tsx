@@ -2,63 +2,40 @@ import * as React from "react";
 import * as ReactRedux from "react-redux";
 import * as ReactDom from "react-dom";
 import * as Redux from "redux";
-
-import SmugMugApiClient, * as SmugMug from "../../smugmug";
+import * as SmugMug from "../../smugmug";
 
 import * as AppSettings from "./AppSettings";
+import * as AppState from "./models/AppState";
+
+import thunkMiddleware from "redux-thunk";
 
 import { App } from "./containers/App";
 
-import { IAppState } from "./models/IAppState";
-
-var defaultState: IAppState = {
+var defaultState: AppState.IAppState = {
     smugMugApiClient: undefined,
     albums: [],
     albumSearchIterator: undefined,
 };
 
-SmugMugApiClient.create(AppSettings.SmugMug.ApiKey)
-    .then(client => {
-        store.dispatch({
-            type: "smugmug-api-client-set",
-            payload: client
-        });
-    });
-
-function timeout(time:number): Promise<void> {
-    return new Promise(resolve => {
-        setTimeout(resolve, time);
-    });
-}
-
-async function searchAlbums(
-    client: SmugMug.ISmugMugApiClient,
-    dispatch: (action:any) => void,
-    text: string) {
-    dispatch({
-        type:"albums-search-response",
-        payload: client.findAlbums(text)
-    });
-    dispatch({
-        type:"albums-search-next"
-    });
-}
-
-function reduceApp (state: IAppState = defaultState, action: any): IAppState {
+function reduceApp (state: AppState.IAppState = defaultState, action: any): AppState.IAppState {
     switch (action.type) {
         case "smugmug-api-client-set":
-            return {
-                smugMugApiClient: action.payload,
-                albums: state.albums,
-                albumSearchIterator: state.albumSearchIterator,
-            };
+            return AppState.create<AppState.IAppState, AppState.IAppSmugMugApiClientState>(
+                state, {
+                    smugMugApiClient: action.payload
+                });
 
         case "albums-clear":
-            return {
-                smugMugApiClient: state.smugMugApiClient,
-                albums: [],
-                albumSearchIterator: state.albumSearchIterator,
-            };
+            return AppState.create<AppState.IAppState, AppState.IAppAlbumsState>(
+                state, {
+                    albums: []
+                });
+
+        case "albums-add":
+            return AppState.create<AppState.IAppState, AppState.IAppAlbumsState>(
+                state, {
+                    albums: state.albums.concat(action.payload)
+                });
 
         case "albums-search":
             if (!state.smugMugApiClient) {
@@ -75,15 +52,14 @@ function reduceApp (state: IAppState = defaultState, action: any): IAppState {
                 store.dispatch({
                     type:"albums-search-next"
                 });
-            }, 0);
+            });
             return state;
 
         case "albums-search-response":
-            return {
-                smugMugApiClient: state.smugMugApiClient,
-                albums: state.albums,
-                albumSearchIterator: action.payload
-            }
+            return AppState.create<AppState.IAppState, AppState.IAppAlbumSearchIteratorState>(
+                state, {
+                    albumSearchIterator: action.payload
+                });
 
         case "albums-search-next":
             if (state.albumSearchIterator) {
@@ -106,22 +82,34 @@ function reduceApp (state: IAppState = defaultState, action: any): IAppState {
             }
             return state;
 
-        case "albums-add":
-            return {
-                smugMugApiClient: state.smugMugApiClient,
-                albums: state.albums.concat(action.payload),
-                albumSearchIterator: state.albumSearchIterator
-            };
-
         default:
             return state;
     }
 }
 
-var store = Redux.createStore(reduceApp);
+const middlewareEnhancer: Redux.StoreEnhancer<AppState.IAppState> =
+    Redux.applyMiddleware(
+        thunkMiddleware
+    );
+
+const root: any = window;
+const composeEnhancers = root.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || Redux.compose;
+const enhancers: Redux.StoreEnhancer<AppState.IAppState> =
+    composeEnhancers(
+        middlewareEnhancer);
+
+const store = Redux.createStore<AppState.IAppState>(reduceApp, enhancers);
 
 ReactDom.render(
     <ReactRedux.Provider store={store}>
         <App/>
     </ReactRedux.Provider>,
     document.getElementById("root"));
+
+SmugMug.default.create(AppSettings.SmugMug.ApiKey)
+    .then(client => {
+        store.dispatch({
+            type: "smugmug-api-client-set",
+            payload: client
+        });
+    });

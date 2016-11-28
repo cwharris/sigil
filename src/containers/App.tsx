@@ -42,7 +42,7 @@ export class Component extends React.Component<IProps & IStateProps & IDispatchP
         return (
             <div>
                 <h1>
-                    React Redux Testing
+                    SmugMug Album Search
                 </h1>
                 <input
                     type="text"
